@@ -1,0 +1,171 @@
+<html><head><base href="https://websim.engine/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de Tickets par Campagne</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .tab:hover {
+            background-color: #f0f0f0;
+        }
+        .tab.active {
+            border-bottom: 2px solid #0066cc;
+            color: #0066cc;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .status-open {
+            background-color: #e6f7ff;
+            color: #0066cc;
+        }
+        .status-in-progress {
+            background-color: #fff7e6;
+            color: #ff9900;
+        }
+        .status-closed {
+            background-color: #e6ffe6;
+            color: #009933;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestion de Tickets par Campagne</h1>
+        <div class="tabs" id="tabs">
+            <button class="tab active" onclick="changeTab('campaign')">Campagne</button>
+            <button class="tab" onclick="changeTab('profile')">Profile</button>
+            <button class="tab" onclick="changeTab('in-progress')">En cours</button>
+            <button class="tab" onclick="changeTab('closed')">Fermés</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Titre</th>
+                    <th>Description</th>
+                    <th>Date de création</th>
+                    <th>Statut</th>
+                    <th>Campagne</th>
+                </tr>
+            </thead>
+            <tbody id="ticketTableBody">
+                <!-- Les tickets seront ajoutés ici dynamiquement -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Données de démonstration pour les tickets
+        const allTickets = [
+            { id: 1, title: "Problème de connexion", description: "Les utilisateurs ne peuvent pas se connecter", createdAt: "2023-05-10", status: "open", campaign: "Printemps 2023" },
+            { id: 2, title: "Erreur 404", description: "Page non trouvée sur /products", createdAt: "2023-05-11", status: "in-progress", campaign: "Été 2023" },
+            { id: 3, title: "Mise à jour de sécurité", description: "Appliquer le correctif de sécurité latest", createdAt: "2023-05-12", status: "closed", campaign: "Printemps 2023" },
+            { id: 4, title: "Optimisation de la base de données", description: "Améliorer les performances des requêtes", createdAt: "2023-05-13", status: "open", campaign: "Automne 2023" },
+            { id: 5, title: "Intégration de l'API de paiement", description: "Connecter le nouveau fournisseur de paiement", createdAt: "2023-05-14", status: "in-progress", campaign: "Été 2023" },
+            { id: 6, title: "Correction du bug d'affichage", description: "Résoudre le problème de mise en page sur mobile", createdAt: "2023-05-15", status: "closed", campaign: "Printemps 2023" },
+        ];
+
+        let currentTab = 'campaign';
+
+        // Fonction pour afficher les tickets dans le tableau
+        function displayTickets(tickets) {
+            const tableBody = document.getElementById('ticketTableBody');
+            tableBody.innerHTML = '';
+            tickets.forEach(ticket => {
+                const row = `
+                    <tr>
+                        <td>${ticket.id}</td>
+                        <td>${ticket.title}</td>
+                        <td>${ticket.description}</td>
+                        <td>${ticket.createdAt}</td>
+                        <td><span class="status status-${ticket.status}">${getStatusText(ticket.status)}</span></td>
+                        <td>${ticket.campaign}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        // Fonction pour obtenir le texte du statut
+        function getStatusText(status) {
+            switch(status) {
+                case 'open': return 'Ouvert';
+                case 'in-progress': return 'En cours';
+                case 'closed': return 'Fermé';
+                default: return status;
+            }
+        }
+
+        // Fonction pour changer d'onglet
+        function changeTab(tab) {
+            currentTab = tab;
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let filteredTickets;
+            if (tab === 'campaign') {
+                filteredTickets = allTickets;
+            } else if (tab === 'profile') {
+                filteredTickets = allTickets.filter(ticket => ticket.status === 'open');
+            } else {
+                filteredTickets = allTickets.filter(ticket => ticket.status === tab);
+            }
+            displayTickets(filteredTickets);
+        }
+
+        // Afficher tous les tickets au chargement de la page
+        displayTickets(allTickets);
+    </script>
+</body>
+</html>

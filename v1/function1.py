@@ -10,6 +10,8 @@ from typing import List, Optional
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import psutil
 
 from dotenv import load_dotenv
@@ -163,8 +165,14 @@ def lister_chrome():
             continue
 
     return chrome_instances
+
 @eel.expose
 def ouvrir_nouvel_onglet(url):
+    # Vérifier si l'URL est valide
+    if not url.startswith("http"):
+        print("L'URL fournie n'est pas valide.")
+        return
+
     # Vérifier s'il y a des instances de Chrome
     load_dotenv()
     chrome_instances = lister_chrome()
@@ -192,12 +200,11 @@ def ouvrir_nouvel_onglet(url):
         # Ouvrir l'URL dans un nouvel onglet
         driver.get(url)
 
-        # Attendre que la page se charge
-        #time.sleep(3)  # Ajustez le temps si nécessaire
-
-        # Accepter les cookies (ajustez le sélecteur si nécessaire)
+        # Attendre que le bouton d'acceptation des cookies soit présent
         try:
-            accept_cookies_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Accepter')]")
+            accept_cookies_button = WebDriverWait(driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Accepter')]"))
+            )
             accept_cookies_button.click()
         except Exception as e:
             print("Le bouton d'acceptation des cookies n'a pas été trouvé ou une erreur s'est produite :", e)

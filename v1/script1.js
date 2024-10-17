@@ -1,10 +1,10 @@
-const entreprise = "GERFLOR";
+const entreprise = "sopra";
 const jql_query = `Entreprise ~ '${entreprise}' OR summary ~ '${entreprise}'`;
 const jql_query_encours = 'type = "Annonce" and sprint=9 and  (status =Repondre or status ="To Do")';
 
 
 function loadTickets() { // Changement de async à une fonction normale
-    return  eel.get_jira_ticket(jql_query_encours )() // Appel de la fonction Python
+    return  eel.get_jira_ticket(jql_query  )() // Appel de la fonction Python
         .then(tickets => { // Utilisation de .then() pour gérer la promesse
             const loadedTickets = JSON.parse(tickets);
             const tableBody = document.getElementById('ticketTableBody');
@@ -14,9 +14,10 @@ function loadTickets() { // Changement de async à une fonction normale
 
             loadedTickets.forEach(ticket => {
                 const row = document.createElement('tr');
-                row.appendChild(createTableCell(ticket.key));
+                //row.appendChild(createTableCell(ticket.key));
+                row.appendChild(createTableCell(ticket.key, `eel.ouvrir_nouvel_onglet('${ticket.url_ticket}')`)); // Utilisation de la nouvelle fonction
                 row.appendChild(createTableCell(ticket.summary, `eel.ouvrir_nouvel_onglet('${ticket.url_annonce}')`)); // Utilisation de la nouvelle fonction
-                row.appendChild(createTableCell(ticket.parent_desc));
+                row.appendChild(createTableCell(ticket.entreprise));
                 row.appendChild(createTableCell(ticket.parent_desc)); // Note: Ceci semble être un doublon
                 row.appendChild(createTableCell(ticket.status['name']));
                 tableBody.appendChild(row);
@@ -34,21 +35,13 @@ function createTableCell(content, onclick = '') {
     if (onclick) {
         cell.setAttribute('onclick', onclick);
         cell.setAttribute('href', '#'); // Ajout d'un lien href vide
+        cell.style.color = 'blue'; // Changer la couleur du texte pour ressembler à un lien
+        cell.style.textDecoration = 'underline'; // Souligner le texte
+        cell.style.cursor = 'pointer'; // Changer le curseur pour indiquer que c'est cliquable
     }
     return cell;
 }
 
-/* 
 
-function navOpen(url) {
-// Commande pour ouvrir Google Chrome
-exec('start chrome', (err, stdout, stderr) => {
-    if (err) {
-        console.error(`Erreur: ${err}`);
-        return;
-    }
-    console.log(`Résultat: ${stdout}`);
-});
-} */
 
 loadTickets(); // Assurez-vous que cette ligne est bien placée pour appeler la fonction

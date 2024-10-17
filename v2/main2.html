@@ -1,0 +1,41 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de Tickets par Campagne</title>
+   
+</head>
+<link rel="stylesheet" href="style2.css">
+<body>
+    <div class="container">
+        <h1>Gestion de Tickets par Campagne</h1>
+        <div class="tabs" id="tabs">
+            <button class="tab active" onclick="changeTab('campaign')">Campagne</button>
+            <button class="tab" onclick="changeTab('profile')">Profile</button>
+            <button class="tab" onclick="changeTab('in-progress')">En cours</button>
+            <button class="tab" onclick="changeTab('closed')">Fermés</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Entreprise</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="ticketTableBody">
+                <!-- Les tickets seront ajoutés ici dynamiquement -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+
+    </script>
+    
+    <script src="eel.js"></script> 
+    <script src="./script2.js"></script> 
+</body>
+</html>
